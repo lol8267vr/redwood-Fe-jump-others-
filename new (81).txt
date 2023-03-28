@@ -1,0 +1,55 @@
+function checkHat()
+    game.Workspace.resources.RemoteEvent:FireServer("wearHat", game.Workspace["Secret Agent Shades"])
+    repeat wait() until game.Players.LocalPlayer.Character:FindFirstChild("Secret Agent Shades")
+    game.Players.LocalPlayer.Character:WaitForChild("Secret Agent Shades").Transparency = 1
+end
+
+function createPaintPart(part, size, cframe, material, color, transparency)
+local lib = require(game:GetService("Workspace").upsilonLibrary)
+    local paint = Instance.new("Part")
+    paint.Parent = Workspace
+    paint.TopSurface = "Smooth"
+    paint.Material = material
+    paint.Reflectance = 0
+    paint.CanCollide = true
+    paint.Anchored = true
+    paint.Size = size
+    paint.CFrame = cframe
+    paint.Color = Color3.fromRGB(255, 0, 0)
+    paint.Transparency = transparency
+    paint.Parent = Workspace["Secret Agent Shades"]
+
+    local properties = {
+        ["TopSurface"] = "Smooth",
+        ["Material"] = material,
+        ["Reflectance"] = 0,
+        ["CanCollide"] = true,
+        ["Anchored"] = true,
+        ["Size"] = size,
+        ["CFrame"] = cframe,
+        ["Color"] = Color,
+        ["Transparency"] = transparency,
+        ["Parent"] = Workspace["Secret Agent Shades"]
+    }
+
+    
+    lib.FireOtherClients("drawLaser", part.Position, part.Position, properties)
+
+    paint:Destroy()
+end
+
+local tool = Instance.new("Tool", game.Players.LocalPlayer.Backpack)
+tool.Name = "Jump Others tool"
+tool.RequiresHandle = false
+
+tool.Activated:Connect(function()
+    checkHat()
+
+while wait(0.1) do
+    local mouse = game:GetService("Players").LocalPlayer:GetMouse()
+    local mouseHit = mouse.Hit.p + Vector3.new(0, 2.5, 0)
+    local cframe = CFrame.new(mouseHit)
+    if mouse.Target and mouse.Target:IsA("BasePart") then
+        createPaintPart(mouse.Target, mouse.Target.Size + Vector3.new(0.005, 0.005, 0.005), cframe, mouse.Target.Material, mouse.Target.Color, mouse.Target.Transparency)
+    end
+end)
